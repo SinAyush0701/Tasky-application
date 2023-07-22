@@ -22,7 +22,108 @@
     />
   </head>
 
-  <body>
+  <body onload="loadInitialData()">
+    <!--Button on small screen-->
+    <div class="add__new__btn__mobile__only d-md-none">
+      <button
+        class="btn btn-primary d-flex align-items-center gap-2"
+        type="submit"
+        data-bs-toggle="modal"
+        data-bs-target="#addNewModal"
+      >
+        <i class="fas fa-plus"></i>
+        Add an item
+      </button>
+    </div>
+
+    <!-- Modal when I click on add a new item-->
+    <div
+      class="modal fade"
+      id="addNewModal"
+      tabindex="-1"
+      aria-labelledby="addNewModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addNewModalLabel">Add New Task</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form onsubmit="return false">
+              <div class="mb-3">
+                <label for="imageURL" class="form-label">Image URL</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="imageURL"
+                  placeholder="https://example.com/image.png"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="taskTitle" class="form-label">Task Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="taskTitle"
+                  placeholder="Enter your task title here..."
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="tags" class="form-label">Task Type</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="tags"
+                  placeholder="Enter your task type here..."
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="taskDescription" class="form-label"
+                  >Task Description</label
+                >
+                <textarea
+                  class="form-control"
+                  id="taskDescription"
+                  placeholder="Explain your task here..."
+                  required
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                onclick="handleSubmit()"
+              >
+              <!-- Button found here -->
+                Save changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div> 
+
     <!-- Modal for UI display on home page -->
     <div
       class="modal fade"
@@ -59,31 +160,18 @@
       </div>
     </div>
 
-    <!--Button on small screen-->
-    <div class="add__new__btn__mobile__only d-md-none">
-      <button
-        class="btn btn-primary d-flex align-items-center gap-2"
-        type="submit"
-        data-bs-toggle="modal"
-        data-bs-target="#addNewModal"
-      >
-        <i class="fas fa-plus"></i>
-        Add an item
-      </button>
-    </div>
-
-    <!-- Modal when I click on add a new item-->
+    <!-- New card to be implemented -->
     <div
       class="modal fade"
-      id="addNewModal"
+      id="showTask"
       tabindex="-1"
-      aria-labelledby="addNewModalLabel"
+      aria-labelledby="showTaskLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="addNewModalLabel">Modal title</h1>
+            <h1 class="modal-title fs-5" id="showTaskLabel">Task Details</h1>
             <button
               type="button"
               class="btn-close"
@@ -91,64 +179,18 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="imageURL" class="form-label">Image URL</label>
-                <input
-                  type="url"
-                  class="form-control"
-                  id="imageURL"
-                  placeholder="https://example.com/image.png"
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="taskTitle" class="form-label">Task Title</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="taskTitle"
-                  placeholder="Enter your task title here..."
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="tasktype" class="form-label">Task Type</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="tasktype"
-                  placeholder="Enter your task type here..."
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="taskDescription" class="form-label"
-                  >Task Description</label
-                >
-                <textarea
-                  class="form-control"
-                  id="taskDescription"
-                  placeholder="Explain your task here..."
-                  required
-                  rows="4"
-                ></textarea>
-              </div>
-
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" class="btn btn-primary">
-                Save changes
-              </button>
-            </form>
+          <div class="modal-body task__content">
+            <!--<p>js txt</p>-->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
@@ -213,7 +255,7 @@
       </section>
       <section class="mt-4">
         <div class="row task__contents">
-          <h1>This is the place where we will get all the cards</h1>
+          <!-- <h1>This is the place where we will get all the cards</h1> -->
         </div>
       </section>
     </div>
@@ -232,3 +274,6 @@
     ></script>
   </body>
 </html>
+
+
+
