@@ -4,15 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tasky Appln</title>
+
+    <!-- custom css -->
     <link rel="stylesheet" href="./styles/styles.css" />
-    <!-- CSS only -->
+
+    <!-- CSS only for bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
       crossorigin="anonymous"
     />
-    <!--font awesome-->
+
+    <!--font awesome icons-->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -23,7 +27,7 @@
   </head>
 
   <body onload="loadInitialData()">
-    <!--Button on small screen-->
+    <!--Button displayed on small screen-->
     <div class="add__new__btn__mobile__only d-md-none">
       <button
         class="btn btn-primary d-flex align-items-center gap-2"
@@ -97,7 +101,6 @@
                   class="form-control"
                   id="taskDescription"
                   placeholder="Explain your task here..."
-                  required
                   rows="4"
                   required
                 ></textarea>
@@ -116,7 +119,7 @@
                 onclick="handleSubmit()"
               >
               <!-- Button found here -->
-                Save changes
+                Save Changes
               </button>
             </form>
           </div>
@@ -154,48 +157,12 @@
             >
               Close
             </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            
           </div>
         </div>
       </div>
     </div>
-
-    <!-- New card to be implemented -->
-    <div
-      class="modal fade"
-      id="showTask"
-      tabindex="-1"
-      aria-labelledby="showTaskLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="showTaskLabel">Task Details</h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body task__content">
-            <!--<p>js txt</p>-->
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    
     <!-- Navbar -->
     <nav class="navbar navbar-expand-md bg-body-tertiary">
       <div class="container-fluid">
@@ -217,17 +184,17 @@
               <a class="nav-link active" aria-current="page" href="#">Home</a>
             </li>
           </ul>
-          <form class="d-flex" role="search">
+          <!-- <form class="d-flex" role="search"> -->
             <button
               class="btn btn-primary d-flex align-items-center gap-2"
-              type="button"
+              type="submit"
               data-bs-toggle="modal"
               data-bs-target="#addNewModal"
             >
               <i class="fas fa-plus"></i>
               Add an item
             </button>
-          </form>
+          <!-- </form> -->
         </div>
       </div>
     </nav>
@@ -245,6 +212,7 @@
                 placeholder="Search Task"
                 aria-label="Search Task"
                 aria-describedby="addon-wrapping"
+                oninput="searchTask.apply(this, arguments)"
               />
               <span class="input-group-text" id="addon-wrapper">
                 <i class="fas fa-search"></i>
@@ -253,6 +221,7 @@
           </div>
         </div>
       </section>
+
       <section class="mt-4">
         <div class="row task__contents">
           <!-- <h1>This is the place where we will get all the cards</h1> -->
@@ -260,6 +229,7 @@
       </section>
     </div>
 
+    <!-- scripts -->
     <script type="text/javascript" src="./scripts/index.js"></script>
 
     <script
@@ -274,6 +244,5 @@
     ></script>
   </body>
 </html>
-
 
 

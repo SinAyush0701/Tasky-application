@@ -12,11 +12,11 @@ const htmlTaskContent = ({ id, title, description, type, url }) => `
 <div class='col-md-6 col-lg-4 mt-3' id= ${id} key= ${id}>
   <div class='card shadow-sm task__card'>
     <div class='card-header d-flex gap-2 justify-content-end task__card__header'>
-        <button type='button' class='btn btn-outline-info mr-2' name=${id}>
-            <i class='fa fa-pencil-alt' name='${id}'></i>
+        <button type='button' class='btn btn-outline-info mr-2' name=${id} onclick='editTask.apply(this, arguments)'>
+            <i class='fas fa-pencil-alt' name= ${id}></i>
         </button>
-        <button type='button' class='btn btn-outline-danger mr-2' name=${id} onclick="deleteTask.apply(this, arguments)">
-            <i class='fa fa-trash-alt' name='${id}'></i>
+        <button type='button' class='btn btn-outline-danger mr-2' name=${id} onclick='deleteTask.apply(this, arguments)'>
+            <i class='fas fa-trash-alt' name= ${id}></i>
         </button> 
     </div>
         <div class='card-body'>
@@ -27,7 +27,7 @@ const htmlTaskContent = ({ id, title, description, type, url }) => `
               }
              <h4 class='task__card__title'>${title}</h4>
              <p class='description trim-3-lines text-muted' data-gram_editor='false'>${description}</p>
-             <div  class='tags text-white d-flex flex-wrap'>
+             <div class='tags text-white d-flex flex-wrap'>
                 <span class='badge bg-primary m-1'>${type}</span>
              </div>
         </div>
@@ -49,7 +49,7 @@ const htmlTaskContent = ({ id, title, description, type, url }) => `
 
 // Dynamic Modals(cards) on our homepage/UI
 const htmlModalContent= ({id, title, description, url}) => {
-    const date= new Date(parseInt(id));
+    const date= new Date(parseInt(id)); //parsing string into integer
     return `
     <div id= ${id}>
     ${
@@ -73,11 +73,13 @@ const updateLocalStorage= () => {
 
 //Reverse process to get data/cards/modals on our UI from Local/Browser storage
 const loadInitialData= () => {
-    const localStorageCopy= JSON.parse(localStorage.task);
+    const localStorageCopy= JSON.parse(localStorage.task); //To convert string back into array to make it visible on UI
 
     if(localStorageCopy) state.taskList= localStorageCopy.tasks;
-    state.taskList.map((cardData) => {
-        taskContent.insertAdjacentHTML("beforeend", htmlTaskContent(cardData));
+    
+    //To work or show on UI, all the elements present on taskList
+    state.taskList.map((cardDate) => {
+        taskContent.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
     });
 };
 
@@ -90,23 +92,25 @@ const handleSubmit= (event) => {
     type: document.getElementById("tags").value,
     description: document.getElementById("taskDescription").value,
   };
+
   if(input.title=== "" || input.type=== "" || input.description=== ""){
     return alert("Please fill all the fields");
   }
   taskContent.insertAdjacentHTML("beforeend", htmlTaskContent({
     ...input, id, })
   );
+
   state.taskList.push({ ...input, id}); // updated taskList for 1st go
   updateLocalStorage(); // updated the same on local storage too
 };
 
 //Opens a new modal on our UIwhen user clicks open task
 const openTask= (e) => {
-  // pop up the current one
+  // pop up the current one, if the event is not existing (default feature)
   if(!e) e = window.event;
 
   // find the correct card opened
-  const getTask= state.taskList.find(({id})=> id=== e.target.id);
+  const getTask= state.taskList.find(({id}) => id === e.target.id);
     taskModal.innerHTML= htmlModalContent(getTask); //We get 3rd card on clicking Open Task
 };
 
@@ -120,18 +124,113 @@ const deleteTask= (e) => {
   const type= e.target.tagName;
   //console.log(type);
 
-  const removeTask= state.taskList.filter(({id}) => id!== targetID);
+  const removeTask= state.taskList.filter(({id}) => id !== targetID);
   //console.log(removeTask);
 
   state.taskList= removeTask; // updating taskList
   updateLocalStorage(); // updating local storage
 
-  if(type=== "button"){
+  if (type === "BUTTON") {
+    // console.log(e.target.parentNode.parentNode.parentNode);
     return e.target.parentNode.parentNode.parentNode.parentNode.removeChild(
       e.parentNode.parentNode.parentNode
     );
   }
+  // console.log(e.target.parentNode.parentNode.parentNode.parentNode);
   return e.target.parentNode.parentNode.parentNode.parentNode.parentNode.removeChild(
     e.target.parentNode.parentNode.parentNode.parentNode
   );
+};
+
+//Edit operation
+const editTask= (e) => {
+  if(!e) e = window.event;
+
+  const targetID= e.target.id;
+  const type= e.target.tagName;
+
+  let parentNode;
+  let taskTitle;
+  let taskDescription;
+  let taskType;
+  let submitButton;
+
+  if(type === "BUTTON"){
+    parentNode= e.target.parentNode.parentNode;
+  } else {
+    parentNode= e.target.parentNode.parentNode.parentNode;
+  }
+
+  taskTitle= parentNode.childNodes[3].childNodes[3];
+  //console.log(taskTitle);
+  taskDescription= parentNode.childNodes[3].childNodes[5];
+  taskType= parentNode.childNodes[3].childNodes[7].childNodes[1];
+  submitButton= parentNode.childNodes[5].childNodes[1];
+
+  taskTitle.setAttribute("contenteditable", "true");
+  taskDescription.setAttribute("contenteditable", "true");
+  taskType.setAttribute("contenteditable", "true");
+
+  submitButton.setAttribute('onclick', "saveEdit.apply(this, arguments)");
+  submitButton.removeAttribute("data-bs-toggle");
+  submitButton.removeAttribute("data-bs-target");
+  submitButton.innerHTML= "Save Changes";
+};
+
+const saveEdit= (e) => {
+  if(!e) e = window.event;
+
+  const targetID= e.target.id;
+  const parentNode= e.target.parentNode.parentNode;
+
+  //To access all the features that were edited
+  const taskTitle= parentNode.childNodes[3].childNodes[3];
+  const taskDescription= parentNode.childNodes[3].childNodes[5];
+  const taskType= parentNode.childNodes[3].childNodes[7].childNodes[1];
+  const submitButton= parentNode.childNodes[5].childNodes[1];
+  
+  const updatedData= {
+    taskTitle: taskTitle.innerHTML,
+    taskDescription: taskDescription.innerHTML,
+    taskType: taskType.innerHTML,
+  };
+
+  let stateCopy = state.taskList;
+  stateCopy= stateCopy.map((task) =>
+  task.id=== targetID 
+  ?{
+    id: task.id,
+    title: updatedData.taskTitle,
+    description: updatedData.taskDescription,
+    type: updatedData.taskType,
+    url: task.url,
+  }
+  :task
+  );
+
+  state.taskList= stateCopy;
+  updateLocalStorage();
+
+  taskTitle.setAttribute("contenteditable", "false");
+  taskDescription.setAttribute("contenteditable", "false");
+  taskType.setAttribute("contenteditable", "false");
+  
+  submitButton.setAttribute("onclick", "openTask.apply(this, arguments)");
+  submitButton.setAttribute("data-bs-toggle", "modal");
+  submitButton.setAttribute("data-bs-target", "#showTask");
+  submitButton.innerHTML= "Open Task";
+};
+
+// Search task
+const searchTask= (e) => {
+  if(!e) e = window.event;
+
+  while(taskContent.firstChild){
+    taskContent.removeChild(taskContent.firstChild);
+  }
+
+  const resultData= state.taskList.filter(({title}) => 
+  title.toLowerCase().includes(e.target.value.toLowerCase()));
+
+  resultData.map((cardData) => taskContent.insertAdjacentHTML("beforeend", htmlTaskContent(cardData)));
 };
